@@ -1,0 +1,4 @@
+#!/bin/sh
+# Queue, User, Time, Slots
+ACCOUNTING=${ACCOUNTING:-hidelab.accounting}
+awk -F: '{print $1, $4, $14, $35, $37}' "$ACCOUNTING"

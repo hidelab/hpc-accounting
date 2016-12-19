@@ -1,0 +1,6 @@
+#!/bin/sh
+ACCOUNTING=${ACCOUNTING:-hidelab.accounting}
+awk -F: '{print $1}' "$ACCOUNTING" |
+  sort |
+  uniq -c |
+  sort -n

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Who uses a queue?
+ACCOUNTING=${ACCOUNTING:-hidelab.accounting}
+QUEUE=hidelab.q
+export QUEUE
+awk -F: '$1 == ENVIRON["QUEUE"] {print $4}' "$ACCOUNTING" |
+  sort |
+  uniq

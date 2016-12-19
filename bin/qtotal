@@ -1,0 +1,12 @@
+#!/bin/sh
+# 
+ACCOUNTING=${ACCOUNTING:-hidelab.accounting}
+TotalUsed=$(awk -F: '$1 == "hidelab.q" {print $14 * $35}' "${ACCOUNTING}" |
+  awk '{total+=$1};END{print total}'
+)
+Elapsed=$(awk -F: '{print $10;print $11}' "${ACCOUNTING}" |
+  awk '+$1' | sort -n | sed -n '1p;$p' |
+  awk '!s{s=$1};{e=$1};END{print e-s}'
+)
+printf "Used: %s\nTotal: %s\n" "$TotalUsed" "$Elapsed"
+

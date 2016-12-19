@@ -1,0 +1,4 @@
+#!/bin/sh
+# This will in-general only work on iceberg.
+ACL=hidelab
+SGE_SINGLE_LINE=1 qconf -su "$ACL"
