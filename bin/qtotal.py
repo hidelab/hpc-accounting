@@ -3,38 +3,38 @@
 import os
 import sys
 
-def main():
+def queue_rows():
+    """
+    An iterator that yields each row of the accounting file that
+    matches the queue.
+    Each row is split at each ':' and yielded as a list.
+    """
+
     accounting_file = os.environ.get('ACCOUNTING',
       'hidelab.accounting')
     queue = os.environ.get('QUEUE', 'hidelab.q')
 
-    cpu_total = 0
     with open(accounting_file) as inp:
         for line in inp:
             row = line.split(':')
-            if row[0] != queue:
+            if row[:1] != [queue]:
                 continue
-            cpu_total += float(row[13]) * float(row[34])
+            yield row
 
-    mem_total = 0
-    with open(accounting_file) as inp:
-        for line in inp:
-            row = line.split(':')
-            if row[0] != queue:
-                continue
-            mem_total += float(row[37])
+
+def main():
+    cpu_total = sum(
+        float(row[13]) + float(row[34]) for row in queue_rows())
+
+    mem_total = sum(float(row[37]) for row in queue_rows())
 
     first = float('inf')
     last = -float('inf')
-    with open(accounting_file) as inp:
-        for line in inp:
-            row = line.split(':')
-            if row[0] != queue:
-                continue
-            if float(row[9]) == 0.0:
-                continue
-            first = min(first, float(row[9]))
-            last = max(last, float(row[10]))
+    for row in queue_rows():
+        if float(row[9]) == 0.0:
+            continue
+        first = min(first, float(row[9]))
+        last = max(last, float(row[10]))
     elapsed = last - first
 
     print("cpu total", cpu_total)
