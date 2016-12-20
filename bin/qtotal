@@ -1,12 +1,22 @@
 #!/bin/sh
 # 
 ACCOUNTING=${ACCOUNTING:-hidelab.accounting}
-TotalUsed=$(awk -F: '$1 == "hidelab.q" {print $14 * $35}' "${ACCOUNTING}" |
+export QUEUE=${QUEUE:-hidelab.q}
+
+CPUUsed=$(awk -F: '$1 == ENVIRON["QUEUE"] {print $14 * $35}' "$ACCOUNTING" |
   awk '{total+=$1};END{print total}'
 )
-Elapsed=$(awk -F: '{print $10;print $11}' "${ACCOUNTING}" |
-  awk '+$1' | sort -n | sed -n '1p;$p' |
+
+MemUsed=$(awk -F: '$1 == ENVIRON["QUEUE"] {print $38}' "$ACCOUNTING" |
+  awk '{total += $1}; END {print total}'
+)
+
+Elapsed=$(awk -F: '$1 == ENVIRON["QUEUE"] && +$10 {print $10;print $11}' "$ACCOUNTING" |
+  sort -n | sed -n '1p;$p' |
   awk '!s{s=$1};{e=$1};END{print e-s}'
 )
-printf "Used: %s\nTotal: %s\n" "$TotalUsed" "$Elapsed"
+printf "CPU Used: %s\nMem Used: %s\nElapsed Time: %s\n" \
+  "$CPUUsed" \
+  "$MemUsed" \
+  "$Elapsed"
 
