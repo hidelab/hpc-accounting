@@ -24,7 +24,7 @@ def queue_rows():
 
 def main():
     cpu_total = sum(
-        float(row[13]) + float(row[34]) for row in queue_rows())
+        float(row[13]) * float(row[34]) for row in queue_rows())
 
     mem_total = sum(float(row[37]) for row in queue_rows())
 
@@ -40,6 +40,8 @@ def main():
     print("cpu total", cpu_total)
     print("mem total", mem_total)
     print("elapsed", elapsed)
+    print("mean cpu", cpu_total/elapsed)
+    print("mean mem", mem_total/elapsed)
       
 
 if __name__ == '__main__':
