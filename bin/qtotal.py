@@ -16,7 +16,7 @@ class Statistic:
 
 def all_rows():
     accounting_file = os.environ.get('ACCOUNTING',
-      'hidelab.accounting')
+      'accounting')
 
     with open(accounting_file) as inp:
         for line in inp:
