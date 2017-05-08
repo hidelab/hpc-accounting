@@ -4,6 +4,13 @@ import itertools
 import os
 import sys
 
+"""
+Analyse a SGE accounting file.
+See accounting(5) for column details,
+but note that Python uses 0-based indexing,
+whereas that man page uses 1-based indexing.
+"""
+
 def queue_rows():
     """
     An iterator that yields each row of the accounting file that
