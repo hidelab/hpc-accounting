@@ -11,6 +11,9 @@ but note that Python uses 0-based indexing,
 whereas that man page uses 1-based indexing.
 """
 
+class Statistic:
+    """Structure to hold accumulated and computed statistics."""
+
 def queue_rows():
     """
     An iterator that yields each row of the accounting file that
@@ -65,25 +68,38 @@ def main():
     vmem = dict()
     cpu = dict()
 
-    # This sorts by queue name (because that's the first element)
+    # This sorts by queue name (because that's the first element).
     rows = sorted(all_rows())
-    valid_wait = (row for row in rows if float(row[8]) and float(row[9]))
+    # Remove rows that do not have valid wait times
+    # (scheduler errors and similar leave 0 in submission_time
+    # and start_time columns).
+    rows = (row for row in rows if float(row[8]) and float(row[9]))
 
-    for q, jobs in itertools.groupby(valid_wait, lambda r: r[0]):
+    qstat = dict()
+
+    # Split by queue.
+    # Accumulate statistics for each queue,
+    # storing one Statistic() instance in the `qstat` dict
+    # for each queue.
+    for q, jobs in itertools.groupby(rows, lambda r: r[0]):
         jobs = list(jobs)
-        wait_time[q] = (sum(float(row[9]) - float(row[8]) for
-          row in jobs), len(jobs))
-        vmem[q] = (sum(float(row[42]) for row in jobs) /
+        stat = Statistic()
+        qstat[q] = stat
+        stat.wait_time = sum(float(row[9]) - float(row[8]) for
+          row in jobs)
+        stat.n = len(jobs)
+        stat.vmem = (sum(float(row[42]) for row in jobs) /
           sum(bool(float(row[42])) for row in jobs))
-        cpu[q] = sum(float(row[13]) * float(row[34]) for row in jobs)
+        stat.cpu = sum(float(row[13]) * float(row[34]) for row in jobs)
 
-    for q,v in wait_time.items():
-        t, n = v
+    print("mean cores\twait\tMem(GB)\tn\tqueue")
+    for q,stat in qstat.items():
         print(q,
-              "mean cores {:.1f},".format(cpu[q]/elapsed),
-              "wait {:.0f} seconds,".format(t/n),
-              "{:.2f} Gbytes".format(vmem[q]/1e9),
-              "(n = {})".format(n)
+              "{:.1f}".format(stat.cpu/elapsed),
+              "{:.0f}".format(stat.wait_time/stat.n),
+              "{:.2f}".format(stat.vmem/1e9),
+              "{}".format(stat.n),
+              sep='\t'
               )
       
 
