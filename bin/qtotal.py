@@ -52,6 +52,14 @@ def main():
         first = min(first, float(row[9]))
         last = max(last, float(row[10]))
     elapsed = last - first
+    print("cpu total", cpu_total)
+    print("mem total", mem_total)
+    print("Total elapsed time in analysis period", elapsed)
+    print()
+
+    print("mean cores utilised", cpu_total/elapsed)
+    print("mean mem", mem_total/elapsed)
+    print()
 
     wait_time = dict()
     vmem = dict()
@@ -68,14 +76,6 @@ def main():
         vmem[q] = (sum(float(row[42]) for row in jobs) /
           sum(bool(float(row[42])) for row in jobs))
         cpu[q] = sum(float(row[13]) * float(row[34]) for row in jobs)
-
-    print("cpu total", cpu_total)
-    print("mem total", mem_total)
-    print("Total elapsed time in analysis period", elapsed)
-    print()
-    print("mean cores utilised", cpu_total/elapsed)
-    print("mean mem", mem_total/elapsed)
-    print()
 
     for q,v in wait_time.items():
         t, n = v
