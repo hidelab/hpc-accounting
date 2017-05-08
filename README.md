@@ -20,6 +20,7 @@ mdp15cmg
 
 ```
 sh bin/qtotal
+```
 
 Total available CPU seconds on `hidelab.q`:
 (33801381 * 16) = 540822096
