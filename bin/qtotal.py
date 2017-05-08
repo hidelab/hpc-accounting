@@ -85,6 +85,11 @@ def main():
         jobs = list(jobs)
         stat = Statistic()
         qstat[q] = stat
+
+        first = min(float(row[9]) for row in jobs)
+        last = max(float(row[10]) for row in jobs)
+        stat.elapsed = last-first
+
         stat.wait_time = sum(float(row[9]) - float(row[8]) for
           row in jobs)
         stat.n = len(jobs)
@@ -95,7 +100,7 @@ def main():
     print("cores\twait\tMem(GB)\tn\tqueue")
     for q,stat in qstat.items():
         print(
-            "{:.1f}".format(stat.cpu/elapsed),
+            "{:.1f}".format(stat.cpu/stat.elapsed),
             "{:.0f}".format(stat.wait_time/stat.n),
             "{:.2f}".format(stat.vmem/1e9),
             "{}".format(stat.n),
