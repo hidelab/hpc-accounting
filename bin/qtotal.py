@@ -6,10 +6,16 @@ import sys
 
 """
 Analyse a SGE accounting file.
-See accounting(5) for column details,
-but note that Python uses 0-based indexing,
-whereas that man page uses 1-based indexing.
+
+The file to analyse should be called `accounting`,
+or this can be changed by setting the ACCOUNTING environment variable.
+
+ACCOUNTING=my_acct_file python3 bin/qtotal.py
 """
+
+# See accounting(5) for column details,
+# but note that Python uses 0-based indexing,
+# whereas that man page uses 1-based indexing.
 
 class Statistic:
     """Structure to hold accumulated and computed statistics."""
