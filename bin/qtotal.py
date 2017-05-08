@@ -92,15 +92,16 @@ def main():
           sum(bool(float(row[42])) for row in jobs))
         stat.cpu = sum(float(row[13]) * float(row[34]) for row in jobs)
 
-    print("mean cores\twait\tMem(GB)\tn\tqueue")
+    print("cores\twait\tMem(GB)\tn\tqueue")
     for q,stat in qstat.items():
-        print(q,
-              "{:.1f}".format(stat.cpu/elapsed),
-              "{:.0f}".format(stat.wait_time/stat.n),
-              "{:.2f}".format(stat.vmem/1e9),
-              "{}".format(stat.n),
-              sep='\t'
-              )
+        print(
+            "{:.1f}".format(stat.cpu/elapsed),
+            "{:.0f}".format(stat.wait_time/stat.n),
+            "{:.2f}".format(stat.vmem/1e9),
+            "{}".format(stat.n),
+            q,
+            sep='\t'
+        )
       
 
 if __name__ == '__main__':
