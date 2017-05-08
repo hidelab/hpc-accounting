@@ -1,4 +1,5 @@
 #!/bin/sh
-# Queue, User, Time, Slots
+# Stands for Queue, User, Time, Slots
 ACCOUNTING=${ACCOUNTING:-hidelab.accounting}
+# queue, user, wallclock, slots, cpu (time)
 awk -F: '{print $1, $4, $14, $35, $37}' "$ACCOUNTING"
